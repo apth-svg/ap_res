@@ -13,13 +13,19 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
-Route::get('/order', [App\Http\Controllers\OrderController::class, 'index'])->name('order');
+Route::get('/',[App\Http\Controllers\OrderController::class,'index'])->name('order.form');
+Route::post('order_submit',[App\Http\Controllers\OrderController::class,'submit'])->name('order.submit');
+Route::get('order/{order}/serve',[App\Http\Controllers\OrderController::class,'serve']);
+
 Route::resource('dish', App\Http\Controllers\DishesController::class);
-
+Route::get('order',[App\Http\Controllers\DishesController::class,'order'])->name('order.list');
+Route::get('order/{order}/approve',[App\Http\Controllers\DishesController::class,'approve']);
+Route::get('orde/{order}/cancel',[App\Http\Controllers\DishesController::class,'cancel']);
+Route::get('order/{order}/ready',[App\Http\Controllers\DishesController::class,'ready']);
 
 Auth::routes([
     'reset' => false,

@@ -20,30 +20,45 @@
           <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">DataTable with default features</h3>
+                    <h3 class="card-title">Dishes</h3>
+                    <a href="/dish/create" class="btn btn-primary float-right">Create</a>
                 </div>
                     <!-- /.card-header -->
                 <div class="card-body">
-                    <table id="example1" class="table table-bordered table-striped">
+                  @if (session('message'))
+                      <div class="alert alert-success">
+                       {{ session('message') }}
+                      </div>
+                  @endif
+                    <table id="dishes" class="table table-bordered table-striped">
                         <thead>
                             <tr>
-                                <th>Rendering engine</th>
-                                <th>Browser</th>
-                                <th>Platform(s)</th>
-                                <th>Engine version</th>
-                                <th>CSS grade</th>
+                                <th>No</th>
+                                <th>Dish Name</th>
+                                <th>Category Name</th>
+                                <th>Created</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>Trident</td>
-                                <td>Internet
-                                Explorer 4.0
-                                </td>
-                                <td>Win 95+</td>
-                                <td> 4</td>
-                                <td>X</td>
-                            </tr>
+                          @foreach ($dishes as $dish)
+                               <tr>
+                                  <td>{{ $dish->id }}</td>
+                                  <td>{{ $dish->name }}</td>
+                                  <td>{{ $dish->category->name }}</td>
+                                  <td>{{ $dish->created_at }}</td>
+                                  <td>
+                                    <div class="form-row">
+                                      <a style="height:40px;margin-left:10px;" href="/dish/{{ $dish->id }}/edit" class="btn btn-warning">Edit</a>
+                                      <form action="/dish/{{ $dish->id }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete?')">Delete</button>
+                                      </form>
+                                    </div>
+                                  </td>
+                              </tr>
+                          @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -58,18 +73,13 @@
 @section('js')
     <script>
     $(function () {
-        $("#example1").DataTable({
-        "responsive": true, "lengthChange": false, "autoWidth": false,
-        // "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-        }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-        $('#example2').DataTable({
-        "paging": true,
-        "lengthChange": false,
-        "ordering": true,
-        "info": true,
-        "autoWidth": false,
-        "responsive": true,
-        });
+        $("#dishes").DataTable({
+          "paging": true,
+          "pageLength": 15,
+          "lengthChange": false,
+          "ordering": true,
+          "info": true,
+          });
     });
 </script>
 @endsection
